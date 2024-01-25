@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="appointment.css">
+    <title>Doctor Appointment</title>
+
+</head>
+
+<body>
+
+    <img id="movingImage" src="appoint.gif" alt="Appointment Illustration">
+
+    <form id="appointmentForm" action="appointment.php">
+        <center>
+            <h1><u>BOOK APPOINTMENT</u></h1>
+            <label for="name">Your Name:</label>
+            <input type="text" id="name" name="name" required>
+
+            <label for="email">Email:</label>
+            <input type="email" id="email" name="email" required>
+
+            <label for="phone">Phone Number:</label>
+            <input type="tel" id="phone" name="phone" required>
+
+            <label for="appointmentDate">Select Appointment Date:</label>
+            <input type="date" id="appointmentDate" name="appointmentDate" min="" required>
+
+            <label for="appointmentTime">Select Appointment Time:</label>
+            <div id="appointmentSlots"></div>
+
+            <button type="button" onclick="submitForm()">Book Appointment</button>
+        </center>
+    </form>
+
+    <script>
+        function getCurrentDateTime() {
+            var now = new Date();
+            var month = (now.getMonth() + 1).toString().padStart(2, '0');
+            var day = now.getDate().toString().padStart(2, '0');
+            var hours = now.getHours().toString().padStart(2, '0');
+            var minutes = now.getMinutes().toString().padStart(2, '0');
+
+            return now.getFullYear() + '-' + month + '-' + day + 'T' + hours + ':' + minutes;
+        }
+
+        function isDateInPast(selectedDate) {
+            var now = new Date();
+            var selectedDateTime = new Date(selectedDate);
+
+            return selectedDateTime < now;
+        }
+
+        var appointmentSlots = Array(16).fill('available');
+        var userBooked = false; // Track if the user has booked a slot
+
+
+        function updateSlotsDisplay() {
+            var slotsContainer = document.getElementById('appointmentSlots');
+            slotsContainer.innerHTML = '';
+
+            var slotTimings = ["7:00 PM", "7:15 PM", "7:30 PM", "7:45 PM", "8:00 PM", "8:15 PM", "8:30 PM", "8:45 PM", "9:00 PM", "9:15 PM", "9:30 PM", "9:45 PM", "10:00 PM", "10:15 PM", "10:30 PM", "10:45 PM"];
+
+            appointmentSlots.forEach(function (status, index) {
+                var slotElement = document.createElement('div');
+                slotElement.className = 'slot ' + status;
+                slotElement.innerText = slotTimings[index];
+
+                slotElement.onclick = function () {
+                    var selectedDate = document.getElementById('appointmentDate').value;
+
+                    if (isDateInPast(selectedDate)) {
+                        alert("Please choose a date in the future.");
+                        return;
+                    }
+
+                    if (status === 'available' && !userBooked) {
+                        // Mark the chosen slot
+                        appointmentSlots[index] = 'chosen';
+                        userBooked = true; // Set the user as booked
+                        updateSlotsDisplay();
+                    } else if (status === 'booked') {
+                        alert("This slot is already booked. Please choose another slot.");
+                    } else if (userBooked) {
+                        alert("You have already booked a slot. You cannot book another one.");
+                    }
+                };
+
+                slotsContainer.appendChild(slotElement);
+            });
+        }
+
+        function submitForm() {
+            var name = document.getElementById('name').value;
+            var email = document.getElementById('email').value;
+            var phone = document.getElementById('phone').value;
+            var appointmentDate = document.getElementById('appointmentDate').value;
+
+            // Validate that all required fields are filled
+            if (!name || !email || !phone || !appointmentDate) {
+                alert("Please fill in all the required fields.");
+                return;
+            }
+
+            var chosenSlot = appointmentSlots.indexOf('chosen');
+
+            if (chosenSlot === -1) {
+                alert("Please choose an available slot for the appointment.");
+                return;
+            }
+
+            // window.locationx
+            alert(`Success \nName: ${name} \nE-mail: ${email} \nPhone: ${phone} \nAppointmentDate: ${appointmentDate}`);
+            // window.location.href = 'HOMEE.html';
+
+
+            fetch('appointment.php', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    name: name,
+                    email: email,
+                    phone: phone,
+                    date: appointmentDate,
+                    slot: chosenSlot,
+                }),
+            })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        alert("Appointment booked successfully!");
+                        // Update the slot status for all users
+                        appointmentSlots[chosenSlot] = 'booked';
+                        userBooked = true; // Set the user as booked
+                        updateSlotsDisplay();
+                    } else {
+                        alert("Failed to book appointment. Please try again.");
+                    }
+                })
+            // .catch(error => {
+            //     console.error('Error:', error);
+            //     alert("An error occurred while processing the appointment. Please try again later.");
+            // });
+        }
+
+        updateSlotsDisplay();
+        document.getElementById('appointmentDate').setAttribute('min', getCurrentDateTime());
+    </script>
+
+</body>
+
+</html>

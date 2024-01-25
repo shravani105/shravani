@@ -1,0 +1,115 @@
+/* appointment.css */
+
+body {
+    font-family: Arial, sans-serif;
+    /* background-color: rgb(91, 161, 153); Shades of green */
+    background-color: cadetblue;
+    margin: 10;
+    padding: 10;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    color: #fff;
+    /* Text color to white */
+}
+
+form {
+    align-items: center;
+    background-color: rgb(118, 183, 174);
+    /* Lighter shade of green */
+    padding: 20px 0 12px 0;
+    width: calc(100% / 2 - 20px);
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+input,
+select {
+    width: 90%;
+    padding: 12px;
+    /* Increased padding for text boxes */
+    margin-bottom: 16px;
+    box-sizing: border-box;
+    outline: none;
+    border-radius: 10px;
+    /* Rounded corners for text boxes */
+    border: 2px solid #fff;
+    /* White border */
+    background-color: rgb(91, 161, 153);
+    /* Darker shade of green */
+    color: #fff;
+    /* Text color to white */
+}
+
+button {
+    background-color: rgb(91, 161, 153);
+    /* Darker shade of green for the button */
+    color: #fff;
+    padding: 14px 24px;
+    /* Increased padding for the button */
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+}
+
+.slot {
+    display: inline-block;
+    width: 80px;
+    height: 60px;
+    margin: 5px;
+    border-radius: 8px;
+    text-align: center;
+    line-height: 60px;
+    font-size: 14px;
+}
+
+.booked {
+    background-color: grey;
+    /* Red */
+    color: #fff;
+}
+
+.chosen {
+    background-color: rgb(91, 161, 153);
+    /* Green */
+    color: #fff;
+    border-radius: 25%;
+    border-color: white;
+}
+
+.available {
+    background-color: #ddd;
+    /* Grey */
+    color: #666;
+}
+
+label {
+    display: block;
+    margin-bottom: 8px;
+    align-content: center;
+    white-space: nowrap;
+    /* Ensure labels stay on one line */
+}
+
+
+
+#movingImage {
+    max-width: 600px;
+    margin: 20px;
+    animation: moveImage 5s infinite linear;
+}
+
+@keyframes moveImage {
+    0% {
+        transform: translateY(0);
+    }
+
+    50% {
+        transform: translateY(20px);
+    }
+
+    100% {
+        transform: translateY(0);
+    }
+}
